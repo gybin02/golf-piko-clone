@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Golf Piko - 极简高尔夫解谜</title>
+    <!-- 引入 Outfit 字体，提升现代感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 主游戏卡片容器 -->
+    <div class="game-container">
+        <!-- 顶部信息栏 -->
+        <header class="game-header">
+            <div class="level-indicator">
+                <span class="level-label">关卡</span>
+                <span class="level-title" id="level-name">01. 启航</span>
+            </div>
+            
+            <!-- 仿原作的木质小招牌步数计数器 -->
+            <div class="step-sign-container">
+                <div class="step-sign">
+                    <div class="step-value" id="step-count">0</div>
+                </div>
+                <div class="step-post"></div>
+            </div>
+        </header>
+
+        <!-- 游戏棋盘区域 -->
+        <main class="board-wrapper">
+            <div class="board-3d-container">
+                <!-- 地图底座厚度与阴影 -->
+                <div class="board-base" id="game-board">
+                    <!-- 动态生成格子，小球，旗子等元素将追加在这里 -->
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部控制栏 -->
+        <footer class="game-footer">
+            <button class="footer-btn" id="prev-btn" title="上一关">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <div class="diamonds-bar">
+                <span class="diamond-icon">💎</span>
+                <span class="diamond-count" id="diamond-ratio">0 / 0</span>
+            </div>
+            <button class="footer-btn" id="reset-btn" title="重置本关">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+            </button>
+        </footer>
+    </div>
+
+    <!-- 胜利/通关弹窗 -->
+    <div class="modal-overlay" id="victory-modal">
+        <div class="modal-content">
+            <div class="victory-icon">🏆</div>
+            <h2 class="victory-title">PERFECT!</h2>
+            <p class="victory-subtitle">你用 <span id="victory-steps">0</span> 步完成了本关！</p>
+            <div class="victory-stats">
+                <div class="stat-item">
+                    <span class="stat-icon">💎</span>
+                    <span class="stat-text" id="victory-diamonds">已收集全部钻石</span>
+                </div>
+            </div>
+            <button class="modal-btn" id="next-level-btn">下一关</button>
+        </div>
+    </div>
+
+    <!-- 游戏说明/提示浮层 -->
+    <div class="tip-toast" id="tip-toast">
+        滑动屏幕或使用方向键控制小白球移动
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
