@@ -172,7 +172,7 @@ const LEVELS = [
             ['w', 'x', '.', '.', '.', 'x'],
             ['.', '.', '.', '.', '.', 'x'],
             ['x', 'x', '.', '.', 'x', 'p'],
-            ['h', 'x', '.', 'b', '.', '.'],
+            ['h', '.', '.', 'b', '.', '.'],
             ['x', '.', '.', '.', '.', '.'],
             ['x', 'p', '.', '.', 'p', 'w']
         ],
@@ -209,11 +209,11 @@ const LEVELS = [
         rows: 8,
         map: [
             ['.', '.', '.', 's', 'x', 'x'],
-            ['.', 'w', '.', '.', 'p', 'x'],
+            ['.', '.', '.', '.', 'p', 'x'],
             ['.', 'b', 'x', 'x', '.', 'x'],
-            ['x', 'x', 'x', 'x', 't', 'x'],
+            ['x', 'x', 'x', 'x', '.', 'x'],
             ['h', 'x', 'x', 'x', '.', 'x'],
-            ['g', '.', '.', '.', '.', 'p'],
+            ['g', '.', '.', 't', '.', 'p'],
             ['x', 'x', 'T', 'x', 'x', 'x'],
             ['p', '.', '.', '.', 'p', 'w']
         ],
@@ -225,6 +225,95 @@ const LEVELS = [
             { row: 7, col: 4, collected: false }
         ],
         gate: { row: 5, col: 0 }
+    },
+    {
+        name: "06. 回旋镖",
+        cols: 5,
+        rows: 5,
+        map: [
+            ['.', '.', '.', '.', '.'],
+            ['s', '.', 'p', '.', 's'],
+            ['.', '.', '.', '.', '.'],
+            ['s', '.', 'p', '.', 's'],
+            ['h', '.', '.', '.', '.']
+        ],
+        start: { row: 0, col: 2 },
+        diamonds: [
+            { row: 1, col: 2, collected: false },
+            { row: 3, col: 2, collected: false }
+        ]
+    },
+    {
+        name: "07. 蛇行取宝",
+        cols: 6,
+        rows: 5,
+        map: [
+            ['.', '.', '.', 's', '.', '.'],
+            ['.', 's', 'p', '.', '.', '.'],
+            ['.', '.', 's', '.', '.', '.'],
+            ['.', '.', '.', 's', 'p', '.'],
+            ['h', '.', '.', '.', '.', '.']
+        ],
+        start: { row: 0, col: 0 },
+        diamonds: [
+            { row: 1, col: 2, collected: false },
+            { row: 3, col: 4, collected: false }
+        ]
+    },
+    {
+        name: "08. 迷宫围城",
+        cols: 6,
+        rows: 6,
+        map: [
+            ['.', '.', '.', 's', '.', '.'],
+            ['.', 's', '.', '.', '.', 's'],
+            ['.', '.', 'p', 's', '.', '.'],
+            ['s', '.', '.', '.', 'p', '.'],
+            ['.', '.', 's', '.', '.', '.'],
+            ['h', '.', '.', '.', 's', '.']
+        ],
+        start: { row: 0, col: 0 },
+        diamonds: [
+            { row: 2, col: 2, collected: false },
+            { row: 3, col: 4, collected: false }
+        ]
+    },
+    {
+        name: "09. 传送门迷局",
+        cols: 6,
+        rows: 6,
+        map: [
+            ['.', '.', '.', 's', 'x', 'x'],
+            ['.', 's', '.', '.', 'p', 'x'],
+            ['.', '.', 's', '.', '.', 'x'],
+            ['t', '.', '.', '.', 's', '.'],
+            ['x', 'x', '.', '.', '.', '.'],
+            ['x', 'x', 'T', '.', 'p', 'h']
+        ],
+        start: { row: 0, col: 0 },
+        diamonds: [
+            { row: 1, col: 4, collected: false },
+            { row: 5, col: 4, collected: false }
+        ]
+    },
+    {
+        name: "10. 门控迷途",
+        cols: 6,
+        rows: 6,
+        map: [
+            ['.', '.', '.', 's', '.', '.'],
+            ['.', 's', '.', '.', 'p', '.'],
+            ['.', '.', 'b', '.', 's', '.'],
+            ['s', '.', '.', '.', '.', '.'],
+            ['.', 'p', 's', '.', '.', '.'],
+            ['h', 'g', '.', '.', '.', '.']
+        ],
+        start: { row: 0, col: 0 },
+        diamonds: [
+            { row: 1, col: 4, collected: false },
+            { row: 4, col: 1, collected: false }
+        ],
+        gate: { row: 5, col: 1 }
     }
 ];
 
@@ -877,6 +966,52 @@ window.addEventListener('touchend', (e) => {
         }
     }
 }, { passive: true });
+
+// ==========================================================================
+// 自动演示路径 (每关最优/展示路径)
+// ==========================================================================
+const AUTOPLAY_PATHS = [
+    ['down', 'left'],                                                              // L1: 2步
+    ['down', 'right', 'down', 'left'],                                             // L2: 4步
+    ['right', 'up', 'left', 'down', 'left', 'up', 'left'],                        // L3: 7步
+    ['down', 'right', 'up'],                                                       // L4: 3步
+    ['down', 'right', 'up', 'right', 'down', 'right', 'down', 'right', 'left', 'up', 'left', 'up'], // L5: 12步
+    ['down', 'left'],                                                              // L6: 2步
+    ['right', 'down', 'right', 'up', 'left', 'down', 'left'],                     // L7: 7步
+    ['right', 'down', 'right', 'left', 'down', 'left'],                           // L8: 6步
+    ['right', 'down', 'right', 'down', 'left', 'down', 'right'],                  // L9: 7步
+    ['down', 'right', 'up', 'right', 'left', 'down', 'left', 'down', 'left']      // L10: 9步
+];
+
+let autoplayRunning = false;
+
+function autoplay() {
+    if (autoplayRunning || isMoving) return;
+    autoplayRunning = true;
+    initLevel(currentLevelIndex);
+    const path = AUTOPLAY_PATHS[currentLevelIndex];
+    let step = 0;
+
+    function nextStep() {
+        if (step >= path.length || !autoplayRunning) { autoplayRunning = false; return; }
+        if (isMoving) { setTimeout(nextStep, 100); return; }
+        const dir = path[step++];
+        const dx = dir === 'right' ? 1 : dir === 'left' ? -1 : 0;
+        const dy = dir === 'down' ? 1 : dir === 'up' ? -1 : 0;
+        slideBall(dx, dy);
+        setTimeout(nextStep, 800);
+    }
+    setTimeout(nextStep, 500);
+}
+
+// 绑定自动演示按钮
+const autoplayBtn = document.getElementById('autoplay-btn');
+if (autoplayBtn) {
+    autoplayBtn.addEventListener('click', () => {
+        AudioSynth.resume();
+        autoplay();
+    });
+}
 
 // 启动第一关
 window.addEventListener('DOMContentLoaded', () => {
